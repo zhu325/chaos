@@ -4,82 +4,19 @@
  * @Autor: Zhu
  * @Date: 2021-12-14 14:15:14
  * @LastEditors: Zhu
- * @LastEditTime: 2021-12-14 22:05:26
+ * @LastEditTime: 2021-12-15 17:25:34
 -->
 <template>
-  <div class="h-80">
+  <div class="h-full overflow-x-hidden max-w-xl mx-6 md:mx-auto lg:mx-auto">
     <span class="text-gray-800 text-3xl py-6 font-bold text-center block">Overview</span>
-    <div class="swiper-container text-white py-8">
+    <div class="swiper-container py-8">
       <div class="swiper-wrapper">
-        <div class="swiper-slide">
+        <div class="swiper-slide" v-for="(item,index) in weatherInfo.data" :key="index">
           <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
+            class="flex items-center justify-center flex-col w-16 h-32 border-light-600 bg-gradient-to-b from-blue-500 via-indigo-600 to-indigo-800 text-white rounded-3xl px-4 py-4"
           >
             <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
-            <span class="text-base">doc</span>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
-          >
-            <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
-            <span class="text-base">doc</span>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
-          >
-            <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
-            <span class="text-base">doc</span>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
-          >
-            <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
-            <span class="text-base">doc</span>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
-          >
-            <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
-            <span class="text-base">doc</span>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
-          >
-            <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
-            <span class="text-base">doc</span>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
-          >
-            <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
-            <span class="text-base">doc</span>
-          </div>
-        </div>
-        <div class="swiper-slide">
-          <div
-            class="bg-indigo-600 flex items-center justify-center flex-col w-20 h-32 rounded-3xl px-4 py-4"
-          >
-            <span class="text-base">Mon</span>
-            <span class="text-3xl font-bold">12</span>
+            <span class="text-3xl font-bold my-1">{{ item.date.substr(8) }}</span>
             <span class="text-base">doc</span>
           </div>
         </div>
@@ -93,27 +30,60 @@
         <span>36</span>
         <span class="text-4xl absolute text-gray-900 -right-5 top-5">°</span>
       </div>
-      <div>山东省淄博市张店区</div>
+      <div>{{ weatherInfo.city }}</div>
     </div>
     <div></div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { reactive, ref, toRefs, onMounted } from 'vue'
 // 引入Swiper
 import Swiper from 'swiper'
+import { getWeather } from '../api/api'
 onMounted(() => {
   // 这里就能打印出来1啦
   initSwiper()
+  api()
 })
+
+
 // 初始化swiper
 const initSwiper = () => {
   new Swiper('.swiper-container', {
     autoplay: true,//可选选项，自动滑动
     slidesPerView: 7,
+    spaceBetween: 40,
+    breakpoints: {
+      //当宽度大于等于320
+      320: {
+        slidesPerView: 4.5,
+        spaceBetween: 20
+      },
+      //当宽度大于等于480
+      480: {
+        slidesPerView: 5.5,
+        spaceBetween: 20
+      },
+      //当宽度大于等于640
+      640: {
+        slidesPerView: 6.5,
+        spaceBetween: 30
+      }
+    }
   })
 }
+const weatherInfo = ref({})
+const api = () => {
+  getWeather().then(({ data: res }) => {
+    weatherInfo.value = res
+  }).catch((err) => {
+    console.log(err)
+  })
+}
+
+// return { weatherInfo }
+
 
 </script>
 
